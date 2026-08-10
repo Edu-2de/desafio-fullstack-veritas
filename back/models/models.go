@@ -1,4 +1,5 @@
 package models
+
 import "time"
 
 type Status string
@@ -9,7 +10,7 @@ const (
 	StatusDone       Status = "done"
 )
 
-var validStatuses = map[Status]bool{
+var ValidStatuses = map[Status]bool{
 	StatusTodo:       true,
 	StatusInProgress: true,
 	StatusDone:       true,
