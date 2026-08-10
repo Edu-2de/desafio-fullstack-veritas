@@ -5,36 +5,40 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"desafio-fullstack-veritas/back/models"
 )
 
 type TaskStore struct {
 	mu    sync.Mutex
-	tasks map[string]Task
+	tasks map[string]models.Task
 }
 
 func NewTaskStore() *TaskStore {
 	return &TaskStore{
-		tasks: make(map[string]Task),
+		tasks: make(map[string]models.Task),
 	}
 }
 
-func (s *TaskStore) List() []Task {
+// List
+func (s *TaskStore) List() []models.Task {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	list := make([]Task, 0, len(s.tasks))
+	list := make([]models.Task, 0, len(s.tasks))
 	for _, t := range s.tasks {
 		list = append(list, t)
 	}
 	return list
 }
 
-func (s *TaskStore) Create(title, description string, status Status) Task {
+// Create
+func (s *TaskStore) Create(title, description string, status models.Status) models.Task {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	now := time.Now().UTC()
-	task := Task{
+	task := models.Task{
 		ID:          generateID(),
 		Title:       title,
 		Description: description,
@@ -46,13 +50,14 @@ func (s *TaskStore) Create(title, description string, status Status) Task {
 	return task
 }
 
-func (s *TaskStore) Update(id, title, description string, status Status) (Task, bool) {
+// Update
+func (s *TaskStore) Update(id, title, description string, status models.Status) (models.Task, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	task, ok := s.tasks[id]
 	if !ok {
-		return Task{}, false
+		return models.Task{}, false
 	}
 
 	task.Title = title
@@ -64,6 +69,7 @@ func (s *TaskStore) Update(id, title, description string, status Status) (Task, 
 	return task, true
 }
 
+// Delete
 func (s *TaskStore) Delete(id string) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
