@@ -1,6 +1,16 @@
 package handlers
 
-import "strings"
+import (
+	"strings"
+
+	"desafio-fullstack-veritas/back/models"
+)
+
+type taskRequest struct {
+	Title       string        `json:"title"`
+	Description string        `json:"description"`
+	Status      models.Status `json:"status"`
+}
 
 func validateTask(req taskRequest, requireStatus bool) []string {
 	var errs []string
@@ -13,7 +23,7 @@ func validateTask(req taskRequest, requireStatus bool) []string {
 		if requireStatus {
 			errs = append(errs, "status é obrigatório")
 		}
-	} else if !validStatuses[req.Status] {
+	} else if !models.ValidStatuses[req.Status] {
 		errs = append(errs, "status inválido (use: todo, in_progress ou done)")
 	}
 

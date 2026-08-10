@@ -1,19 +1,15 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
+
+	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/back/storage"
 )
 
-type taskRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Status      Status `json:"status"`
-}
-
-// tasksHandler roteia /tasks (GET, POST) e /tasks/{id} (PUT, DELETE).
-func tasksHandler(store *TaskStore) http.HandlerFunc {
+// /tasks (GET, POST) e /tasks/{id} (PUT, DELETE).
+func TasksHandler(store *storage.TaskStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := strings.TrimPrefix(r.URL.Path, "/tasks/")
 		hasID := id != "" && id != "tasks"
@@ -45,41 +41,40 @@ func tasksHandler(store *TaskStore) http.HandlerFunc {
 	}
 }
 
-func handleList(store *TaskStore, w http.ResponseWriter, r *http.Request) {
-	tasks := store.List()
-	writeJSON(w, http.StatusOK, tasks)
+func handleList(store *storage.TaskStore, w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, store.List())
 }
 
-func handleCreate(store *TaskStore, w http.ResponseWriter, r *http.Request) {
+func handleCreate(store *storage.TaskStore, w http.ResponseWriter, r *http.Request) {
 	var req taskRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeError(w, http.StatusBadRequest, "corpo da requisição inválido")
+	if err := decodeBody(r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if errs := validateTask(req, false); len(errs) > 0 {
-		writeError(w, http.StatusBadRequest, strings.Join(errs, "; "))
+		writeValidationError(w, errs)
 		return
 	}
 
 	status := req.Status
 	if status == "" {
-		status = StatusTodo
+		status = models.StatusTodo
 	}
 
 	task := store.Create(req.Title, req.Description, status)
 	writeJSON(w, http.StatusCreated, task)
 }
 
-func handleUpdate(store *TaskStore, w http.ResponseWriter, r *http.Request, id string) {
+func handleUpdate(store *storage.TaskStore, w http.ResponseWriter, r *http.Request, id string) {
 	var req taskRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeError(w, http.StatusBadRequest, "corpo da requisição inválido")
+	if err := decodeBody(r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if errs := validateTask(req, true); len(errs) > 0 {
-		writeError(w, http.StatusBadRequest, strings.Join(errs, "; "))
+		writeValidationError(w, errs)
 		return
 	}
 
@@ -91,8 +86,8 @@ func handleUpdate(store *TaskStore, w http.ResponseWriter, r *http.Request, id s
 	writeJSON(w, http.StatusOK, task)
 }
 
-func handleDelete(store *TaskStore, w http.ResponseWriter, r *http.Request, id string) {
-	if ok := store.Delete(id); !ok {
+func handleDelete(store *storage.TaskStore, w http.ResponseWriter, r *http.Request, id string) {
+	if !store.Delete(id) {
 		writeError(w, http.StatusNotFound, "task não encontrada")
 		return
 	}
