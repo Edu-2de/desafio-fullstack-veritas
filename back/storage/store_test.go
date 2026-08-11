@@ -7,7 +7,7 @@ import (
 )
 
 func TestTaskStore_CreateAndList(t *testing.T) {
-	store := NewTaskStore()
+	store := NewTaskStore(NoopPersister{})
 	task := store.Create("Estudar Go", "Ler documentação", models.StatusTodo)
 
 	if task.ID == "" {
@@ -19,7 +19,7 @@ func TestTaskStore_CreateAndList(t *testing.T) {
 }
 
 func TestTaskStore_UpdateNotFound(t *testing.T) {
-	store := NewTaskStore()
+	store := NewTaskStore(NoopPersister{})
 	_, ok := store.Update("id-inexistente", "Título", "", models.StatusDone)
 	if ok {
 		t.Error("esperava false ao atualizar ID inexistente")
@@ -27,7 +27,7 @@ func TestTaskStore_UpdateNotFound(t *testing.T) {
 }
 
 func TestTaskStore_Delete(t *testing.T) {
-	store := NewTaskStore()
+	store := NewTaskStore(NoopPersister{})
 	task := store.Create("Tarefa temporária", "", models.StatusTodo)
 
 	if !store.Delete(task.ID) {

@@ -10,7 +10,7 @@ import (
 )
 
 func TestHandleCreate_Success(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 
 	body := strings.NewReader(`{"title": "Estudar Go", "status": "todo"}`)
@@ -25,7 +25,7 @@ func TestHandleCreate_Success(t *testing.T) {
 }
 
 func TestHandleCreate_MissingTitle(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 
 	body := strings.NewReader(`{"description": "sem título"}`)
@@ -40,7 +40,7 @@ func TestHandleCreate_MissingTitle(t *testing.T) {
 }
 
 func TestHandleList_Empty(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 
 	req := httptest.NewRequest(http.MethodGet, "/tasks", nil)
@@ -54,7 +54,7 @@ func TestHandleList_Empty(t *testing.T) {
 }
 
 func TestHandleUpdate_NotFound(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 
 	body := strings.NewReader(`{"title": "Não existe", "status": "todo"}`)
@@ -69,7 +69,7 @@ func TestHandleUpdate_NotFound(t *testing.T) {
 }
 
 func TestHandleDelete_Success(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 	task := store.Create("Tarefa a remover", "", "todo")
 
@@ -84,7 +84,7 @@ func TestHandleDelete_Success(t *testing.T) {
 }
 
 func TestHandleDelete_NotFound(t *testing.T) {
-	store := storage.NewTaskStore()
+	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)
 
 	req := httptest.NewRequest(http.MethodDelete, "/tasks/id-inexistente", nil)
