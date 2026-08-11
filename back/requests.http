@@ -1,0 +1,57 @@
+### Variáveis
+@baseUrl = http://localhost:8080
+@idTask = 1bd3123e270b4470
+
+### Listar todas as tasks
+GET {{baseUrl}}/tasks
+
+### Criar task (mínimo, só título)
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "Estudar Go"
+}
+
+### Criar task (completa, com descrição e status)
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "title": "Montar o frontend",
+  "description": "Colunas + cards + formulário",
+  "status": "in_progress"
+}
+
+### Criar task inválida (sem título) — deve retornar 400
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "description": "Sem título, deve falhar"
+}
+
+### Atualizar task (troque o ID abaixo por um ID real retornado no GET)
+PUT {{baseUrl}}/tasks/{{idTask}}
+Content-Type: application/json
+
+{
+  "title": "Título atualizado",
+  "description": "Descrição atualizada",
+  "status": "done"
+}
+
+### Atualizar task inexistente — deve retornar 404
+PUT {{baseUrl}}/tasks/id-que-nao-existe
+Content-Type: application/json
+
+{
+  "title": "Não importa",
+  "status": "todo"
+}
+
+### Excluir task (troque o ID abaixo por um ID real)
+DELETE {{baseUrl}}/tasks/{{idTask}}
+
+### Excluir task inexistente — deve retornar 404
+DELETE {{baseUrl}}/tasks/id-que-nao-existe

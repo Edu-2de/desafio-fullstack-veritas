@@ -25,7 +25,6 @@ func main() {
 	}
 }
 
-
 func getPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
