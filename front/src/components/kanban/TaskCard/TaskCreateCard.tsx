@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { COLUMN_ORDER, STATUS_LABEL, type ColumnStatus } from '@/types/task'
+import type { ColumnStatus } from '@/types/task'
 import Button from '../../ui/Button'
-import { statusBadgeVariants } from '../status'
+import StatusPicker from '../StatusPicker'
 
 const cardVariants = tv({
   base: `
@@ -61,22 +61,7 @@ export default function TaskCreateCard({
         rows={2}
         className="w-full resize-none rounded-md border border-border px-2 py-1.5 text-sm text-ink outline-none focus:border-brand"
       />
-      <div className="flex flex-wrap gap-1.5">
-        {COLUMN_ORDER.map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => setSelectedStatus(option)}
-            className={`${statusBadgeVariants({ status: option })} cursor-pointer px-2 py-0.5 text-xs transition-all ${
-              selectedStatus === option
-                ? 'ring-2 ring-current ring-offset-1'
-                : 'opacity-40 hover:opacity-70'
-            }`}
-          >
-            {STATUS_LABEL[option]}
-          </button>
-        ))}
-      </div>
+      <StatusPicker value={selectedStatus} onChange={setSelectedStatus} />
       <div className="flex justify-end gap-2">
         <Button variant="secondary" size="sm" onClick={onCancel}>
           Cancelar

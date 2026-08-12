@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"log"
+	"sort"
 	"sync"
 	"time"
 
@@ -44,7 +45,9 @@ func NewTaskStore(persister Persister) *TaskStore {
 	}
 }
 
-// List
+// List devolve as tasks ordenadas por criação. A ordem de iteração de um
+// map em Go é aleatorizada a cada chamada — sem esse sort, o board
+// "embaralharia" a ordem dos cards sozinho a cada refetch.
 func (s *TaskStore) List() []models.Task {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -53,6 +56,9 @@ func (s *TaskStore) List() []models.Task {
 	for _, t := range s.tasks {
 		list = append(list, t)
 	}
+	sort.Slice(list, func(i, j int) bool {
+		return list[i].CreatedAt.Before(list[j].CreatedAt)
+	})
 	return list
 }
 

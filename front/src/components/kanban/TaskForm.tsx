@@ -1,22 +1,15 @@
 import { useState } from 'react'
 import { tv } from 'tailwind-variants'
-import { COLUMN_ORDER, STATUS_LABEL, type ColumnStatus } from '@/types/task'
+import type { ColumnStatus } from '@/types/task'
 import Button from '../ui/Button'
 import Text from '../ui/Text'
-import { statusBadgeVariants } from './status'
+import StatusPicker from './StatusPicker'
 
 const formVariants = tv({
   slots: {
     label: 'mb-1.5 block text-xs font-medium text-muted',
     input:
       'w-full rounded-xl border border-border px-3.5 py-3 text-base text-ink outline-none transition-colors focus:border-brand',
-    statusButton: 'cursor-pointer px-3.5 py-2 text-sm transition-all',
-  },
-  variants: {
-    isSelected: {
-      true: { statusButton: 'ring-2 ring-current ring-offset-1' },
-      false: { statusButton: 'opacity-40 active:opacity-70' },
-    },
   },
 })
 
@@ -41,7 +34,7 @@ export default function TaskForm({
   const [description, setDescription] = useState(initialDescription)
   const [status, setStatus] = useState(initialStatus)
 
-  const { label, input, statusButton } = formVariants()
+  const { label, input } = formVariants()
 
   const handleSubmit = () => {
     const trimmed = title.trim()
@@ -93,18 +86,7 @@ export default function TaskForm({
         >
           Status
         </Text>
-        <div className="flex flex-wrap gap-2">
-          {COLUMN_ORDER.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setStatus(option)}
-              className={`${statusBadgeVariants({ status: option })} ${statusButton({ isSelected: status === option })}`}
-            >
-              {STATUS_LABEL[option]}
-            </button>
-          ))}
-        </div>
+        <StatusPicker value={status} onChange={setStatus} size="lg" />
       </div>
 
       <div className="flex gap-2 border-t border-border pt-4">

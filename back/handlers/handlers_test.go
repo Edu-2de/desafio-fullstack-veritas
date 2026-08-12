@@ -96,3 +96,34 @@ func TestHandleDelete_NotFound(t *testing.T) {
 		t.Errorf("esperava status 404, veio %d", rec.Code)
 	}
 }
+
+// PUT/DELETE direto em /tasks (sem ID) devem dar 400, não cair no
+// storage e virar um 404 enganoso.
+func TestHandleUpdate_MissingID(t *testing.T) {
+	store := storage.NewTaskStore(storage.NoopPersister{})
+	handler := TasksHandler(store)
+
+	body := strings.NewReader(`{"title": "Sem ID", "status": "todo"}`)
+	req := httptest.NewRequest(http.MethodPut, "/tasks", body)
+	rec := httptest.NewRecorder()
+
+	handler(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("esperava status 400, veio %d", rec.Code)
+	}
+}
+
+func TestHandleDelete_MissingID(t *testing.T) {
+	store := storage.NewTaskStore(storage.NoopPersister{})
+	handler := TasksHandler(store)
+
+	req := httptest.NewRequest(http.MethodDelete, "/tasks", nil)
+	rec := httptest.NewRecorder()
+
+	handler(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("esperava status 400, veio %d", rec.Code)
+	}
+}

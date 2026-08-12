@@ -39,30 +39,31 @@ export default function Board({
 }: BoardProps) {
   return (
     <div className="flex flex-col gap-5 sm:flex-row sm:gap-5 lg:gap-8">
-      {COLUMN_ORDER.map((status) => (
-        <Column
-          key={status}
-          status={status}
-          title={STATUS_LABEL[status]}
-          count={tasks.filter((t) => t.status === status).length}
-          isDragOver={
-            dragOverStatus === status || taskDragOverStatus === status
-          }
-          dropRef={(el) => registerColumnRef(status, el)}
-          onAddClick={() => onAddTask(status)}
-          createCard={
-            status === creatingStatus ? (
-              <TaskCreateCard
-                status={status}
-                onCreate={onCreateTask}
-                onCancel={onCancelCreate}
-              />
-            ) : undefined
-          }
-        >
-          {tasks
-            .filter((t) => t.status === status)
-            .map((task) => (
+      {COLUMN_ORDER.map((status) => {
+        const columnTasks = tasks.filter((t) => t.status === status)
+
+        return (
+          <Column
+            key={status}
+            status={status}
+            title={STATUS_LABEL[status]}
+            count={columnTasks.length}
+            isDragOver={
+              dragOverStatus === status || taskDragOverStatus === status
+            }
+            dropRef={(el) => registerColumnRef(status, el)}
+            onAddClick={() => onAddTask(status)}
+            createCard={
+              status === creatingStatus ? (
+                <TaskCreateCard
+                  status={status}
+                  onCreate={onCreateTask}
+                  onCancel={onCancelCreate}
+                />
+              ) : undefined
+            }
+          >
+            {columnTasks.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -70,8 +71,9 @@ export default function Board({
                 onDragPointerDown={(e) => onTaskDragPointerDown(e, task)}
               />
             ))}
-        </Column>
-      ))}
+          </Column>
+        )
+      })}
     </div>
   )
 }

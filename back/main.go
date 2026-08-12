@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"desafio-fullstack-veritas/back/handlers"
 	"desafio-fullstack-veritas/back/middleware"
@@ -21,8 +22,18 @@ func main() {
 	handler := middleware.CORS(mux)
 
 	port := getPort()
+	server := &http.Server{
+		Addr:    ":" + port,
+		Handler: handler,
+		// Sem timeouts, uma conexão lenta/travada (por acidente ou de
+		// propósito, tipo slowloris) prende uma goroutine pra sempre.
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
 	log.Printf("servidor rodando em http://localhost:%s\n", port)
-	if err := http.ListenAndServe(":"+port, handler); err != nil {
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
 }

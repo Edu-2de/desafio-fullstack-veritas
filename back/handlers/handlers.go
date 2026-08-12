@@ -5,14 +5,28 @@ import (
 	"strings"
 
 	"desafio-fullstack-veritas/back/models"
-	"desafio-fullstack-veritas/back/storage"
 )
 
+// TaskRepository é tudo que os handlers precisam do armazenamento de
+// tasks. Definida aqui (no consumidor), não no pacote storage: os
+// handlers dependem só desse contrato, não do *storage.TaskStore
+// concreto — dá pra trocar a implementação (outro storage, um mock em
+// teste) sem tocar neste pacote. *storage.TaskStore já satisfaz essa
+// interface implicitamente.
+type TaskRepository interface {
+	List() []models.Task
+	Create(title, description string, status models.Status) models.Task
+	Update(id, title, description string, status models.Status) (models.Task, bool)
+	Delete(id string) bool
+}
+
+const tasksPrefix = "/tasks/"
+
 // /tasks (GET, POST) e /tasks/{id} (PUT, DELETE).
-func TasksHandler(store *storage.TaskStore) http.HandlerFunc {
+func TasksHandler(store TaskRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := strings.TrimPrefix(r.URL.Path, "/tasks/")
-		hasID := id != "" && id != "tasks"
+		hasID := strings.HasPrefix(r.URL.Path, tasksPrefix) && r.URL.Path != tasksPrefix
+		id := strings.TrimPrefix(r.URL.Path, tasksPrefix)
 
 		switch r.Method {
 		case http.MethodGet:
@@ -41,11 +55,11 @@ func TasksHandler(store *storage.TaskStore) http.HandlerFunc {
 	}
 }
 
-func handleList(store *storage.TaskStore, w http.ResponseWriter, r *http.Request) {
+func handleList(store TaskRepository, w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, store.List())
 }
 
-func handleCreate(store *storage.TaskStore, w http.ResponseWriter, r *http.Request) {
+func handleCreate(store TaskRepository, w http.ResponseWriter, r *http.Request) {
 	var req taskRequest
 	if err := decodeBody(r, &req); err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
@@ -66,7 +80,7 @@ func handleCreate(store *storage.TaskStore, w http.ResponseWriter, r *http.Reque
 	writeJSON(w, http.StatusCreated, task)
 }
 
-func handleUpdate(store *storage.TaskStore, w http.ResponseWriter, r *http.Request, id string) {
+func handleUpdate(store TaskRepository, w http.ResponseWriter, r *http.Request, id string) {
 	var req taskRequest
 	if err := decodeBody(r, &req); err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
@@ -86,7 +100,7 @@ func handleUpdate(store *storage.TaskStore, w http.ResponseWriter, r *http.Reque
 	writeJSON(w, http.StatusOK, task)
 }
 
-func handleDelete(store *storage.TaskStore, w http.ResponseWriter, r *http.Request, id string) {
+func handleDelete(store TaskRepository, w http.ResponseWriter, r *http.Request, id string) {
 	if !store.Delete(id) {
 		writeError(w, http.StatusNotFound, "task não encontrada")
 		return
