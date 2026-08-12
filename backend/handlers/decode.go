@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const maxBodySize = 1 << 20 // 1MB
+const maxBodySize = 1 << 20
 
 func decodeBody(r *http.Request, dst any) error {
 	r.Body = http.MaxBytesReader(nil, r.Body, maxBodySize)

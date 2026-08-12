@@ -32,12 +32,9 @@ export default function KanbanPage() {
   const { mutate: createTask } = useCreateTask()
   const { mutate: updateTask } = useUpdateTask()
 
-  // Desktop: cria direto na coluna, num card inline (sem modal).
   const [creatingStatus, setCreatingStatus] = useState<ColumnStatus | null>(
     null,
   )
-  // Mobile: sem colunas lado a lado para "entrar" com um card inline, então
-  // o botão "+" continua abrindo a folha de formulário.
   const [mobileCreateOpen, setMobileCreateOpen] = useState(false)
 
   const { container, mobileHeader, dragTooltip, taskDragTooltip } =
@@ -82,10 +79,6 @@ export default function KanbanPage() {
   const { taskDrag, handlePointerDown: handleTaskDragPointerDown } =
     useTaskMoveDrag(getColumnAt, handleMoveTask)
 
-  // No mobile o "+" só reage a clique (não há drag entre colunas
-  // empilhadas), então abre a folha de formulário direto. No desktop a
-  // criação é conduzida via onCreatePointerDown (arrastar ou clicar e
-  // depois clicar numa coluna), que abre o card inline naquela coluna.
   const handleCreateClick = () => {
     if (isMobileViewport()) setMobileCreateOpen(true)
   }

@@ -1,6 +1,6 @@
 services:
-  back:
-    build: ./back
+  backend:
+    build: ./backend
     ports:
       - '8080:8080'
     environment:
@@ -10,22 +10,25 @@ services:
       CORS_ORIGIN: http://localhost:3000
       DATA_FILE: /data/tasks.json
     volumes:
-      - back-data:/data
+      - backend-data:/data
     restart: unless-stopped
 
+  # TODO: renomear pra "frontend" (contexto ./frontend) assim que a pasta
+  # front/ puder ser renomeada — hoje um handle de arquivo aberto (editor)
+  # está bloqueando o rename no filesystem.
   front:
     build:
       context: ./front
       args:
-        # Baked no bundle em build time — precisa ser a URL onde o back
+        # Baked no bundle em build time — precisa ser a URL onde o backend
         # fica acessível a partir do NAVEGADOR do usuário (não o nome do
         # serviço Docker, que só resolve entre containers).
         VITE_API_URL: http://localhost:8080
     ports:
       - '3000:80'
     depends_on:
-      - back
+      - backend
     restart: unless-stopped
 
 volumes:
-  back-data:
+  backend-data:

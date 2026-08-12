@@ -27,8 +27,6 @@ func TestTaskStore_UpdateNotFound(t *testing.T) {
 	}
 }
 
-// List() itera um map, cuja ordem o Go aleatoriza a cada execução — sem
-// o sort em List(), este teste pegaria isso de vez em quando.
 func TestTaskStore_List_OrderedByCreatedAt(t *testing.T) {
 	store := NewTaskStore(NoopPersister{})
 

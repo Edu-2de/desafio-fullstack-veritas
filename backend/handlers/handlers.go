@@ -7,12 +7,6 @@ import (
 	"desafio-fullstack-veritas/backend/models"
 )
 
-// TaskRepository é tudo que os handlers precisam do armazenamento de
-// tasks. Definida aqui (no consumidor), não no pacote storage: os
-// handlers dependem só desse contrato, não do *storage.TaskStore
-// concreto — dá pra trocar a implementação (outro storage, um mock em
-// teste) sem tocar neste pacote. *storage.TaskStore já satisfaz essa
-// interface implicitamente.
 type TaskRepository interface {
 	List() []models.Task
 	Create(title, description string, status models.Status) models.Task

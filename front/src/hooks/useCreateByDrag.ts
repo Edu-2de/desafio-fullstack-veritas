@@ -18,11 +18,6 @@ export function useCreateByDrag(
   const [drag, setDrag] = useState<CreatePoint | null>(null)
   const [placing, setPlacing] = useState(false)
 
-  // Sempre a versão mais recente, sem entrar nas deps do efeito abaixo.
-  // Sem isso, cada setDrag() durante o "placing" re-renderiza o
-  // componente pai, que recria onCreate/getColumnAt, o que reiniciava o
-  // efeito a cada movimento do mouse e nunca deixava o guard de
-  // confirmação ficar pronto.
   const getColumnAtRef = useRef(getColumnAt)
   const onCreateRef = useRef(onCreate)
   useEffect(() => {

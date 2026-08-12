@@ -17,9 +17,6 @@ export interface TaskCreateCardProps {
   onCancel: () => void
 }
 
-// Card inline usado no desktop para criar uma task direto na coluna, sem
-// modal: aparece no lugar de um card comum, com o status da coluna que
-// disparou a criação já pré-selecionado (mas ainda ajustável).
 export default function TaskCreateCard({
   status,
   onCreate,

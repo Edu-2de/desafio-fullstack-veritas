@@ -98,7 +98,6 @@ func TestHandleDelete_NotFound(t *testing.T) {
 }
 
 // PUT/DELETE direto em /tasks (sem ID) devem dar 400, não cair no
-// storage e virar um 404 enganoso.
 func TestHandleUpdate_MissingID(t *testing.T) {
 	store := storage.NewTaskStore(storage.NoopPersister{})
 	handler := TasksHandler(store)

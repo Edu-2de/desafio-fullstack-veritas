@@ -2,9 +2,6 @@ import { tv } from 'tailwind-variants'
 import { COLUMN_ORDER, STATUS_LABEL, type ColumnStatus } from '@/types/task'
 import { statusBadgeVariants } from './status'
 
-// Seletor de status reutilizado onde quer que o usuário escolha o status
-// de uma task (criar/editar, desktop/mobile) — antes era markup quase
-// idêntico copiado em três lugares.
 const pickerVariants = tv({
   slots: {
     container: 'flex flex-wrap',

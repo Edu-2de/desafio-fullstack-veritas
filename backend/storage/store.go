@@ -11,11 +11,6 @@ import (
 	"desafio-fullstack-veritas/backend/models"
 )
 
-// Persister abstrai onde as tasks são guardadas entre execuções do
-// servidor. O TaskStore depende só desta interface, não de um arquivo
-// JSON específico — permite trocar a implementação (memória em testes,
-// arquivo em produção, banco de dados no futuro) sem tocar na lógica de
-// negócio.
 type Persister interface {
 	Load() (map[string]models.Task, error)
 	Save(tasks map[string]models.Task) error
@@ -27,9 +22,6 @@ type TaskStore struct {
 	persister Persister
 }
 
-// NewTaskStore cria um TaskStore carregando o estado inicial do
-// persister informado. Toda escrita (Create, Update, Delete) é
-// persistida em seguida via o mesmo persister.
 func NewTaskStore(persister Persister) *TaskStore {
 	tasks, err := persister.Load()
 	if err != nil {
@@ -45,9 +37,6 @@ func NewTaskStore(persister Persister) *TaskStore {
 	}
 }
 
-// List devolve as tasks ordenadas por criação. A ordem de iteração de um
-// map em Go é aleatorizada a cada chamada — sem esse sort, o board
-// "embaralharia" a ordem dos cards sozinho a cada refetch.
 func (s *TaskStore) List() []models.Task {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -114,10 +103,6 @@ func (s *TaskStore) Delete(id string) bool {
 	return true
 }
 
-// save grava o estado atual através do persister. Chamada apenas com s.mu
-// já travado. Falhas de persistência são logadas, não interrompem a
-// operação em memória: a API continua respondendo mesmo que o disco
-// esteja indisponível.
 func (s *TaskStore) save() {
 	if err := s.persister.Save(s.tasks); err != nil {
 		log.Printf("storage: falha ao salvar tasks: %v", err)
