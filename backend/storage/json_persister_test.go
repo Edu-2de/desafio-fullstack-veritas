@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 func TestJSONFilePersister_LoadMissingFile(t *testing.T) {

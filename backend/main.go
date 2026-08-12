@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"desafio-fullstack-veritas/back/handlers"
-	"desafio-fullstack-veritas/back/middleware"
-	"desafio-fullstack-veritas/back/storage"
+	"desafio-fullstack-veritas/backend/handlers"
+	"desafio-fullstack-veritas/backend/middleware"
+	"desafio-fullstack-veritas/backend/storage"
 )
 
 func main() {

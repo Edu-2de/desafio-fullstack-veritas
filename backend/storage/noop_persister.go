@@ -1,6 +1,6 @@
 package storage
 
-import "desafio-fullstack-veritas/back/models"
+import "desafio-fullstack-veritas/backend/models"
 
 // NoopPersister não lê nem grava nada; usado onde persistência em disco é
 // indesejada (testes, por exemplo).

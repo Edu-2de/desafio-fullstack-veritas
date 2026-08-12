@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"desafio-fullstack-veritas/back/storage"
+	"desafio-fullstack-veritas/backend/storage"
 )
 
 func TestHandleCreate_Success(t *testing.T) {

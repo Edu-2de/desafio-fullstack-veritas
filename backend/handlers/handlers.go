@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 // TaskRepository é tudo que os handlers precisam do armazenamento de

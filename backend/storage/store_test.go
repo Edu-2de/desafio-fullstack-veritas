@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 func TestTaskStore_CreateAndList(t *testing.T) {

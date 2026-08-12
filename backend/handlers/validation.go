@@ -3,7 +3,7 @@ package handlers
 import (
 	"strings"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 type taskRequest struct {

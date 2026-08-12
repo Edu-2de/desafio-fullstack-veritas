@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 // Persister abstrai onde as tasks são guardadas entre execuções do

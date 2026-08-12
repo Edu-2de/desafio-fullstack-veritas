@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"desafio-fullstack-veritas/back/models"
+	"desafio-fullstack-veritas/backend/models"
 )
 
 // JSONFilePersister guarda as tasks como um array JSON em um arquivo no
